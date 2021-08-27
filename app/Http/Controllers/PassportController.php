@@ -97,6 +97,44 @@ class PassportController extends Controller
 
         return response()->json($tokens);
     }
+	
+	
+    /**
+     * Login request access and refresh token.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function token(Request $request)
+    {
+        $refreshToken = $request->input('refresh_token');
+
+        $http = new Client();
+
+        try {
+            $response = $http->post(env('APP_URL') . '/oauth/token', [
+                'form_params' => [
+                    'grant_type' => 'refresh_token',
+                    'refresh_token' => $refreshToken,
+                    'client_id' => env('OAUTH_PWD_GRANT_CLIENT_ID') ,
+                    'client_secret' => env('OAUTH_PWD_GRANT_CLIENT_SECRET'),
+                    'scope' => '*'
+                ],
+            ]);
+
+            $tokens = json_decode((string)$response->getBody() , true);
+        }
+        catch(ClientException $e)
+        {
+            if ($e->getResponse()->getStatusCode() === 401) {
+                return response()->json('Refresh token invalid or expired', 401);
+            }
+
+            throw $e;
+        }
+
+        return response()->json($tokens);
+    }
 
     /**
      * Returns Authenticated User Details

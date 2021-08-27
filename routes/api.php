@@ -20,6 +20,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('login', 'PassportController@login');
 Route::post('register', 'PassportController@register');
+Route::post('token', 'PassportController@token');
+Route::post('login', 'PassportController@loginManual');
 
 Route::middleware('auth:api')->group(function () {
     Route::get('user', 'PassportController@details');
