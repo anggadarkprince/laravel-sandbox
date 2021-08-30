@@ -16,3 +16,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('login', 'LoginController@index');
+Route::post('auth', 'LoginController@auth');
+
+Route::resource('tweets', 'TweetController');
+Route::resource('users/follow', 'UserController@follow');
